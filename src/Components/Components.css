@@ -1,0 +1,27 @@
+.main-header {
+    width: 100%;
+    background-color: green;
+    padding: 0.5% 3%;
+    color: white;
+    border-bottom: 5px solid black;
+}
+
+.grade-input {
+    display: block;
+}
+.grade-input-element {
+    margin: 10px 10px;
+    display: flex;
+}
+
+.grade-input-element div {
+    margin: 0px 10px;
+}
+
+.grade-input-element div label {
+    margin-right: 5px;
+}
+
+input[type=button]{
+    margin-left: 10px;
+}
