@@ -11,20 +11,20 @@ class Input extends React.Component {
                 grades: [
                     {
                         ae: '',
-                        score: '',
-                        weight: '',
+                        score: 0,
+                        weight: 0,
                         index: 0,
                     },
                     {
                         ae: '',
-                        score: '',
-                        weight: '',
+                        score: 0,
+                        weight: 0,
                         index: 1,
                     },
                     {
                         ae: '',
-                        score: '',
-                        weight: '',
+                        score: 0,
+                        weight: 0,
                         index: 2,
                     }
                 ],
@@ -46,11 +46,11 @@ class Input extends React.Component {
 
     generateGradeInput = () => {
         return (
-            <div className="grade-input">
+            <div className="container">
                 {
                     this.state.grades.map((grade) => (
-                        <div className="grade-input-element" key={grade.index}>
-                            <div className="grade-input-elemen">
+                        <div className="row" key={grade.index}>
+                            <div className="col">
                                 <label htmlFor="assignment-exam">Assignment/Exam</label>
                                 <input 
                                     type="text" 
@@ -60,7 +60,7 @@ class Input extends React.Component {
                                     onChange={(e) => {this.editRow(grade.index, 'ae', e.target.value)}}
                                 />
                             </div>
-                            <div className="grade-input-elemen">
+                            <div className="col">
                                 <label htmlFor="score">Score</label>
                                 <input 
                                     type="text" 
@@ -71,7 +71,7 @@ class Input extends React.Component {
                                     size="3"
                                 />
                             </div>
-                            <div className="grade-input-elemen">
+                            <div className="col">
                                 <label htmlFor="weight">Weight</label>
                                 <input 
                                     type="text" 
@@ -94,8 +94,8 @@ class Input extends React.Component {
         newGrades.push({
             ae: '',
             score: '',
-            weight: '',
-            index: this.state.grades.length + 1,
+            weight: '', 
+            index: this.state.grades.length,
         })
         this.setState({
             grades: newGrades,
@@ -127,13 +127,14 @@ class Input extends React.Component {
         let newTotal = 0;
         let totalPercent = 0;
         this.state.grades.forEach((key) => {
-            newTotal += key.score * key.weight;
-            totalPercent += key.weight;
+            newTotal += parseFloat(key.score) * parseFloat(key.weight);
+            totalPercent += parseFloat(key.weight);
         });
+        console.log(totalPercent)
         totalPercent = newTotal + (100 * (1 - totalPercent));
         this.setState({
-            total: newTotal,
-            maxGrade: totalPercent,
+            total: newTotal.toString(),
+            maxGrade: totalPercent.toString(),
         });
         this.saveStateToDevice();
     }
@@ -146,9 +147,11 @@ class Input extends React.Component {
                         Enter your grades
                     </legend>
                     {this.generateGradeInput()}
-                    <input type="submit" onClick={() => this.calculate()} value="Calculate" className="btn btn-primary" />
-                    <input type="button" onClick={() => this.addRow()} value="Add Row" className="btn btn-secondary" />
-                    <input type="button" onClick={() => this.removeRow()} value="Remove Row" className="btn btn-secondary"/>
+                    <div className="btn-group" role="group">
+                        <input type="submit" onClick={() => this.calculate()} value="Calculate" className="btn btn-primary" />
+                        <input type="button" onClick={() => this.addRow()} value="Add Row" className="btn btn-secondary" />
+                        <input type="button" onClick={() => this.removeRow()} value="Remove Row" className="btn btn-secondary"/>
+                    </div>
                 </fieldset>
                 <h3>Total: {this.state.total === 0 ? "None" : this.state.total + "%"}</h3>
                 <h3>Maximum Possible Grade: {this.state.maxGrade}</h3>
