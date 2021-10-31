@@ -127,8 +127,8 @@ class Input extends React.Component {
         let newTotal = 0;
         let totalPercent = 0;
         this.state.grades.forEach((key) => {
-            newTotal += parseFloat(key.score) * parseFloat(key.weight);
-            totalPercent += parseFloat(key.weight);
+            newTotal += parseFloat(key.score) * parseFloat(key.weight) * .01;
+            totalPercent += parseFloat(key.weight) * .01;
         });
         console.log(totalPercent)
         totalPercent = newTotal + (100 * (1 - totalPercent));
