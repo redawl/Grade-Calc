@@ -10,7 +10,7 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-      - run: docker compose up
+      - run: docker compose up -d
       - run: ./mvnw clean package
       - run: ./mvnw test
     
