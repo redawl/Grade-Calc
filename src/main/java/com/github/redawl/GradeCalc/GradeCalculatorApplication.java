@@ -1,4 +1,4 @@
-package com.example.GradeCalc;
+package com.github.redawl.GradeCalc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
