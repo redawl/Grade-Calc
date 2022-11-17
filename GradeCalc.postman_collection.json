@@ -1,0 +1,137 @@
+{
+	"info": {
+		"_postman_id": "306ffc2b-51ad-44fe-8851-3edc5ceb2484",
+		"name": "Grade Calc",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12619413"
+	},
+	"item": [
+		{
+			"name": "List of Classes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/classes",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"classes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Toplevel Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}",
+					"host": [
+						"{{baseUrl}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Assignment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "className",
+							"value": "Testing",
+							"type": "text"
+						},
+						{
+							"key": "AssignmentName",
+							"value": "Final",
+							"type": "text"
+						},
+						{
+							"key": "weight",
+							"value": ".50",
+							"type": "text"
+						},
+						{
+							"key": "value",
+							"value": "80",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/assignment",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"assignment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Class Assignments",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{baseUrl}}/assignment?className=Testing",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"assignment"
+					],
+					"query": [
+						{
+							"key": "className",
+							"value": "Testing"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Grade For Class",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/classes/grade?name=Testing",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"classes",
+						"grade"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Testing"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

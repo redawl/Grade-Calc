@@ -7,7 +7,7 @@ public class AssignmentTests {
     @Test
     void calculateGradeShouldReturnCorrectValue(){
         Assignment assignment = new Assignment();
-        assignment.setAssignmentValue(80);
+        assignment.setAssignmentScore(80);
         assignment.setAssignmentWeight(.5);
         Assertions.assertEquals(assignment.calculateValue(), 40);
     }

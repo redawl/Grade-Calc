@@ -9,7 +9,7 @@ import javax.persistence.Id;
 @Entity
 public class Assignment {
     private double AssignmentWeight;
-    private double assignmentValue;
+    private double assignmentScore;
     @Id
     private String assignmentName;
     private String className;
@@ -18,8 +18,8 @@ public class Assignment {
         return AssignmentWeight;
     }
 
-    public double getAssignmentValue(){
-        return assignmentValue;
+    public double getAssignmentScore(){
+        return assignmentScore;
     }
 
     public void setAssignmentName(String assignmentName) {
@@ -38,11 +38,11 @@ public class Assignment {
         this.AssignmentWeight = assignmentWeight;
     }
 
-    public void setAssignmentValue(double assignmentValue){
+    public void setAssignmentScore(double assignmentValue){
         if(assignmentValue > 100 || assignmentValue < 0){
             throw new IllegalArgumentException("Value must be between 0 and 100");
         }
-        this.assignmentValue = assignmentValue;
+        this.assignmentScore = assignmentValue;
     }
 
     public void setClassName(String className){
@@ -57,6 +57,6 @@ public class Assignment {
      * @return Grade
      */
     public double calculateValue() {
-        return AssignmentWeight * assignmentValue;
+        return AssignmentWeight * assignmentScore;
     }
 }
