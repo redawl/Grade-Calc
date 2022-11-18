@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/assignment")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AssignmentController {
 
     private final ClassService classService;

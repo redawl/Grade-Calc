@@ -11,8 +11,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/")
 public class HomeController {
 
-    @GetMapping
+    @GetMapping("/")
     public String index(){
+        return "index";
+    }
+
+    @GetMapping("/class")
+    public String getClassPath(){
         return "index";
     }
 

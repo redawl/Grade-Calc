@@ -19,7 +19,8 @@ INSERT INTO authorities(username, authority) values ('admin', 'ROLE_ADMIN');
 INSERT INTO authorities(username, authority) values ('admin', 'ROLE_USER');
 
 CREATE TABLE assignment(
-    assignment_name varchar PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
+    assignment_name varchar NOT NULL,
 --    username varchar NOT NULL,
     class_name varchar NOT NULL,
     assignment_weight double precision NOT NULL,

@@ -4,6 +4,8 @@ import com.github.redawl.GradeCalc.Assignment.Assignment;
 import com.github.redawl.GradeCalc.Assignment.AssignmentRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+
 @Service
 public class ClassService {
 
@@ -22,7 +24,8 @@ public class ClassService {
             throw new IllegalArgumentException("Assignment cannot be null");
         }
 
-        if(assignmentRepository.findById(assignment.getAssignmentName()).isPresent()){
+        if(assignmentRepository.findAssignmentByAssignmentNameAndClassName(assignment.getAssignmentName(),
+                assignment.getClassName()) != null){
             throw new IllegalArgumentException("Assignment already exists");
         }
 
@@ -47,7 +50,7 @@ public class ClassService {
     public Iterable<Assignment> getAssignmentsByClass(String className){
         assertCorrectParameter(className, "Cannot retrieve assignments for a null or empty class");
 
-        return assignmentRepository.findGAssignmentsByClassName(className);
+        return assignmentRepository.findAssignmentsByClassName(className);
     }
 
     /**
@@ -59,7 +62,7 @@ public class ClassService {
         assertCorrectParameter(className, "Cannot compute grade for null or empty class");
 
         double computedGrade = 0.0;
-        for (Assignment assignment : assignmentRepository.findGAssignmentsByClassName(className)) {
+        for (Assignment assignment : assignmentRepository.findAssignmentsByClassName(className)) {
             computedGrade += assignment.calculateValue();
         }
 
@@ -76,7 +79,7 @@ public class ClassService {
 
         double totalGrade = 0;
         double totalWeight = 0;
-        for(Assignment assignment : assignmentRepository.findGAssignmentsByClassName(className)){
+        for(Assignment assignment : assignmentRepository.findAssignmentsByClassName(className)){
             totalGrade += assignment.calculateValue();
             totalWeight += assignment.getAssignmentWeight();
         }
@@ -98,7 +101,7 @@ public class ClassService {
 
         double totalGrade = 0;
         double totalWeight = 0;
-        for(Assignment assignment : assignmentRepository.findGAssignmentsByClassName(className)){
+        for(Assignment assignment : assignmentRepository.findAssignmentsByClassName(className)){
             totalGrade += assignment.calculateValue();
             totalWeight += assignment.getAssignmentWeight();
         }
@@ -112,6 +115,20 @@ public class ClassService {
     }
 
     /**
+     * Get a list of every class
+     * @return list of classes
+     */
+    public List<Class> getAllClasses(){
+        HashMap<String, Class> classes = new HashMap<>();
+
+        assignmentRepository.findAll().forEach(assignment -> {
+            classes.putIfAbsent(assignment.getClassName(), new Class(assignment.getClassName()));
+        });
+
+        return new ArrayList<>(classes.values());
+    }
+
+    /**
      * Verify that a parameter is not null or empty
      * @param parameter Class name to verify
      * @param errorMessage Message to throw if class name was not valid
@@ -120,9 +137,5 @@ public class ClassService {
         if(parameter == null || "".equals(parameter)){
             throw new IllegalArgumentException(errorMessage);
         }
-    }
-
-    public Assignment findAssignment(String assignment){
-        return assignmentRepository.findById(assignment).orElse(null);
     }
 }
