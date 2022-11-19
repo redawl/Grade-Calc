@@ -36,10 +36,11 @@ public class ClassService {
      * Remove an assignment by its name
      * @param assignmentName Name of assignment to remove
      */
-    public void removeAssignment(String assignmentName){
+    public boolean removeAssignment(String assignmentName, String className){
         assertCorrectParameter(assignmentName, "Cannot remove a null or empty assignment");
+        assertCorrectParameter(className, "Cannot remove a null or empty class");
 
-        assignmentRepository.deleteById(assignmentName);
+        return assignmentRepository.removeAssignmentByAssignmentNameAndClassName(assignmentName, className) != 0;
     }
 
     /**
@@ -96,7 +97,7 @@ public class ClassService {
     public double computeGradeNeededToGetGrade(String className, double targetGrade){
         assertCorrectParameter(className, "Cannot compute needed grade for null or empty class");
         if(targetGrade < 0 || targetGrade > 100){
-            throw new IllegalArgumentException(String.format("Target grade of %s is not a valid grade.", targetGrade));
+            throw new IllegalArgumentException(String.format("Target grade of %f is not a valid grade.", targetGrade));
         }
 
         double totalGrade = 0;
@@ -111,7 +112,7 @@ public class ClassService {
 
         double requiredGrade = (targetGrade - totalGrade) / (1 - totalWeight);
 
-        return requiredGrade < 0 ? 0 : targetGrade;
+        return requiredGrade < 0 ? 0 : requiredGrade;
     }
 
     /**
@@ -121,9 +122,8 @@ public class ClassService {
     public List<Class> getAllClasses(){
         HashMap<String, Class> classes = new HashMap<>();
 
-        assignmentRepository.findAll().forEach(assignment -> {
-            classes.putIfAbsent(assignment.getClassName(), new Class(assignment.getClassName()));
-        });
+        assignmentRepository.findAll().forEach(assignment -> classes.putIfAbsent(assignment.getClassName(),
+                        new Class(assignment.getClassName())));
 
         return new ArrayList<>(classes.values());
     }

@@ -10,8 +10,8 @@ import javax.persistence.Id;
  */
 @Entity
 public class Assignment {
-    private double AssignmentWeight;
-    private double assignmentScore;
+    private double assignmentWeight = 0.0;
+    private double assignmentScore = 0.0;
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String assignmentName;
@@ -26,7 +26,7 @@ public class Assignment {
     }
 
     public double getAssignmentWeight(){
-        return AssignmentWeight;
+        return assignmentWeight;
     }
 
     public double getAssignmentScore(){
@@ -46,7 +46,7 @@ public class Assignment {
         if(assignmentWeight > 1 || assignmentWeight < 0){
             throw new IllegalArgumentException("Weight must be between 0 and 1");
         }
-        this.AssignmentWeight = assignmentWeight;
+        this.assignmentWeight = assignmentWeight;
     }
 
     public void setAssignmentScore(double assignmentValue){
@@ -68,6 +68,26 @@ public class Assignment {
      * @return Grade
      */
     public double calculateValue() {
-        return AssignmentWeight * assignmentScore;
+        return assignmentWeight * assignmentScore;
+    }
+
+    /**
+     * Validate that every field in the assignment is populated
+     * @return True if all are populated, false if not
+     */
+    public boolean validateAllFieldsArePopulated(){
+        return assignmentName != null && assignmentWeight != 0 && assignmentScore != 0 && className != null;
+    }
+
+    /**
+     * Create json string representation of assignment
+     * @return JSON string
+     */
+    public String toJSON(){
+        return "{" + String.format("\"assignmentName\": \"%s\",", assignmentName) +
+                String.format("\"className\": \"%s\",", className) +
+                String.format("\"assignmentWeight\": %f,", assignmentWeight) +
+                String.format("\"assignmentScore\": %f", assignmentScore) +
+                "}";
     }
 }

@@ -6,4 +6,6 @@ public interface AssignmentRepository extends CrudRepository<Assignment, String>
     Iterable<Assignment> findAssignmentsByClassName(String className);
 
     Assignment findAssignmentByAssignmentNameAndClassName(String assignmentName, String className);
+
+    Integer removeAssignmentByAssignmentNameAndClassName(String assignmentName, String className);
 }
