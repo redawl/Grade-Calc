@@ -25,7 +25,7 @@ public class AssignmentControllerTests {
     private static final String endpoint = "/api/assignment";
     private final MockMvc mockMvc;
 
-
+    @Autowired
     public AssignmentControllerTests(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
