@@ -4,6 +4,7 @@ import com.github.redawl.GradeCalc.Assignment.Assignment;
 import com.github.redawl.GradeCalc.Assignment.AssignmentRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -19,6 +20,7 @@ public class ClassService {
      * Add an assignment for a class
      * @param assignment Assignment to add
      */
+    @Transactional
     public void addAssignment(Assignment assignment){
         if(assignment == null){
             throw new IllegalArgumentException("Assignment cannot be null");
@@ -36,6 +38,7 @@ public class ClassService {
      * Remove an assignment by its name
      * @param assignmentName Name of assignment to remove
      */
+    @Transactional
     public boolean removeAssignment(String assignmentName, String className){
         assertCorrectParameter(assignmentName, "Cannot remove a null or empty assignment");
         assertCorrectParameter(className, "Cannot remove a null or empty class");
