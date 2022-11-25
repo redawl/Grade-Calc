@@ -1,14 +1,31 @@
 package com.github.redawl.GradeCalc.Grade;
 
+import lombok.Builder;
+
+import java.util.List;
+
 /**
  * Calculated grade
  */
-public class Grade {
+@Builder
+public class GradeResponse {
+    public enum GradeType {
+        MAX,
+        CURRENT,
+        REQUIRED
+    }
+
+    private static final List<String> types = List.of(
+            "MAX",
+            "CURRENT",
+            "REQUIRED"
+    );
+
     private String className;
     private double grade;
     private String gradeType;
 
-    public Grade(String className, double grade, String gradeType) {
+    public GradeResponse(String className, double grade, String gradeType) {
         this.className = className;
         this.grade = grade;
         this.gradeType = gradeType;
@@ -36,5 +53,9 @@ public class Grade {
 
     public void setGradeType(String gradeType) {
         this.gradeType = gradeType;
+    }
+
+    public static String gradeType(GradeType gradeType){
+        return types.get(gradeType.ordinal());
     }
 }

@@ -21,9 +21,9 @@ INSERT INTO authorities(username, authority) values ('admin', 'ROLE_USER');
 CREATE TABLE assignment(
     id BIGSERIAL PRIMARY KEY,
     assignment_name varchar NOT NULL,
---    username varchar NOT NULL,
+   username varchar NOT NULL,
     class_name varchar NOT NULL,
     assignment_weight double precision NOT NULL,
-    assignment_score double precision NOT NULL
- --   foreign key (username) references users(username)
+    assignment_score double precision NOT NULL,
+   foreign key (username) references users(username)
 );

@@ -1,50 +1,40 @@
 package com.github.redawl.GradeCalc.Assignment;
 
-import org.checkerframework.checker.units.qual.A;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AssignmentTests {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Test
     void calculateGradeShouldReturnCorrectValue(){
         double testAssignmentScore = 80;
         double testAssignmentWeight = .5;
-        Assignment assignment = new Assignment();
-        assignment.setAssignmentScore(testAssignmentScore);
-        assignment.setAssignmentWeight(testAssignmentWeight);
-        Assertions.assertEquals(assignment.calculateValue(), testAssignmentScore * testAssignmentWeight);
+        AssignmentDto assignmentDto = new AssignmentDto();
+        assignmentDto.setAssignmentScore(testAssignmentScore);
+        assignmentDto.setAssignmentWeight(testAssignmentWeight);
+        Assertions.assertEquals(assignmentDto.calculateValue(), testAssignmentScore * testAssignmentWeight);
     }
 
     @Test
     void validateFieldsArePopulatedShouldReturnTrueWithAllFields(){
-        Assignment assignment = new Assignment();
-        assignment.setAssignmentScore(100);
-        assignment.setAssignmentWeight(.5);
-        assignment.setAssignmentName("Testing");
-        assignment.setClassName("Testing Class");
+        AssignmentDto assignmentDto = new AssignmentDto();
+        assignmentDto.setAssignmentScore(100);
+        assignmentDto.setAssignmentWeight(.5);
+        assignmentDto.setAssignmentName("Testing");
+        assignmentDto.setClassName("Testing Class");
 
-        Assertions.assertTrue(assignment.validateAllFieldsArePopulated());
+        Assertions.assertTrue(assignmentDto.validateAllFieldsArePopulated());
     }
 
     @Test
     void validateFieldsArePopulatedShouldReturnFalseWithMissingFields(){
-        Assignment assignment = new Assignment();
-        assignment.setAssignmentScore(100);
-        assignment.setAssignmentName("Testing");
-        assignment.setClassName("Testing Class");
+        AssignmentDto assignmentDto = new AssignmentDto();
+        assignmentDto.setAssignmentScore(100);
+        assignmentDto.setAssignmentName("Testing");
+        assignmentDto.setClassName("Testing Class");
 
-        Assertions.assertFalse(assignment.validateAllFieldsArePopulated());
-    }
-
-    @Test
-    void toJSONShouldReturnValidJSONObject(){
-        Assignment assignment = new Assignment();
-        assignment.setAssignmentScore(100);
-        assignment.setAssignmentWeight(.5);
-        assignment.setAssignmentName("Testing");
-        assignment.setClassName("Testing Class");
-
-        Assertions.assertEquals(assignment.toJSON(), "{\"assignmentName\": \"Testing\",\"className\": \"Testing Class\"," +
-                "\"assignmentWeight\": 0.500000,\"assignmentScore\": 100.000000}");
+        Assertions.assertFalse(assignmentDto.validateAllFieldsArePopulated());
     }
 }

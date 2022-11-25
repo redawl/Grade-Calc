@@ -1,12 +1,12 @@
 package com.github.redawl.GradeCalc.web;
 
-import com.github.redawl.GradeCalc.Assignment.Assignment;
 import com.github.redawl.GradeCalc.Class.ClassService;
-import com.github.redawl.GradeCalc.Grade.Grade;
-import com.github.redawl.GradeCalc.Grade.GradeFactory;
+import com.github.redawl.GradeCalc.Grade.GradeResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/grade")
@@ -19,38 +19,50 @@ public class GradeController {
     }
 
     @GetMapping
-    public Grade computeGrade(@RequestParam(value = "className") String className){
+    public GradeResponse computeGrade(@RequestParam(value = "className") String className, HttpServletRequest httpServletRequest){
         double grade = 0;
         try {
-            grade = classService.computeGradeForClass(className);
+            grade = classService.computeGradeForClass(className, httpServletRequest.getRemoteUser());
         } catch (IllegalArgumentException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
 
-        return GradeFactory.buildGrade(className, grade, GradeFactory.GradeType.CURRENT);
+        return GradeResponse.builder().className(className).grade(grade)
+                .gradeType(GradeResponse.gradeType(GradeResponse.GradeType.CURRENT))
+                .build();
     }
 
     @GetMapping(path="/max")
-    public Grade computeMaxGrade(@RequestParam(value = "className") String className){
+    public GradeResponse computeMaxGrade(@RequestParam(value = "className") String className, HttpServletRequest httpServletRequest){
         double grade = 0;
         try {
-            grade =  classService.computeMaxGradeForClass(className);
+            grade =  classService.computeMaxGradeForClass(className, httpServletRequest.getRemoteUser());
         } catch (IllegalArgumentException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
 
-        return GradeFactory.buildGrade(className, grade, GradeFactory.GradeType.MAX);
+        return GradeResponse.builder()
+                .className(className)
+                .grade(grade)
+                .gradeType(GradeResponse.gradeType(GradeResponse.GradeType.MAX))
+                .build();
     }
 
     @GetMapping(path="/required")
-    public Grade computeMaxGrade(@RequestParam(value = "className") String className,
-                                  @RequestParam(value = "targetGrade") double  targetGrade){
+    public GradeResponse computeRequiredGrade(@RequestParam(value = "className") String className,
+                                         @RequestParam(value = "targetGrade") double  targetGrade,
+                                         HttpServletRequest httpServletRequest){
         double grade = 0;
         try {
-            grade = classService.computeGradeNeededToGetGrade(className, targetGrade);
+            grade = classService.computeGradeNeededToGetGrade(className, targetGrade, httpServletRequest.getRemoteUser());
         } catch (IllegalArgumentException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
-        return GradeFactory.buildGrade(className, grade, GradeFactory.GradeType.REQUIRED);
+
+        return GradeResponse.builder()
+                .className(className)
+                .grade(grade)
+                .gradeType(GradeResponse.gradeType(GradeResponse.GradeType.REQUIRED))
+                .build();
     }
 }

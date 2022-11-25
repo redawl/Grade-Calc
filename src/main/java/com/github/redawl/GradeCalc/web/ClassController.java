@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -19,7 +20,7 @@ public class ClassController {
     }
 
     @GetMapping
-    public List<com.github.redawl.GradeCalc.Class.Class> getClasses(){
-        return classService.getAllClasses();
+    public List<com.github.redawl.GradeCalc.Class.Class> getClasses(HttpServletRequest httpServletRequest){
+        return classService.getAllClasses(httpServletRequest.getRemoteUser());
     }
 }

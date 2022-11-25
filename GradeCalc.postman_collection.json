@@ -7,23 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "List of Classes",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseUrl}}/classes",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"classes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Toplevel Request",
 			"request": {
 				"method": "GET",
@@ -43,29 +26,13 @@
 				"method": "POST",
 				"header": [],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "className",
-							"value": "Testing",
-							"type": "text"
-						},
-						{
-							"key": "AssignmentName",
-							"value": "Final",
-							"type": "text"
-						},
-						{
-							"key": "weight",
-							"value": ".50",
-							"type": "text"
-						},
-						{
-							"key": "value",
-							"value": "80",
-							"type": "text"
+					"mode": "raw",
+					"raw": "{\n    \"assignmentName\":\"Midterm\",\n    \"className\":\"ece\",\n    \"assignmentWeight\":0.5,\n    \"assignmentScore\":100\n}",
+					"options": {
+						"raw": {
+							"language": "json"
 						}
-					]
+					}
 				},
 				"url": {
 					"raw": "{{baseUrl}}/assignment",
@@ -92,7 +59,7 @@
 					"urlencoded": []
 				},
 				"url": {
-					"raw": "{{baseUrl}}/assignment?className=Testing",
+					"raw": "{{baseUrl}}/assignment?className=ece",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -102,7 +69,7 @@
 					"query": [
 						{
 							"key": "className",
-							"value": "Testing"
+							"value": "ece"
 						}
 					]
 				}
@@ -115,23 +82,169 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/classes/grade?name=Testing",
+					"raw": "{{baseUrl}}/grade?className=Testing",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"classes",
 						"grade"
 					],
 					"query": [
 						{
-							"key": "name",
+							"key": "className",
 							"value": "Testing"
 						}
 					]
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Max Grade Required for a Target Grade",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grade/required?className=Testing&targetGrade=80",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grade",
+						"required"
+					],
+					"query": [
+						{
+							"key": "className",
+							"value": "Testing"
+						},
+						{
+							"key": "targetGrade",
+							"value": "80"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Maximum Possible Grade",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/grade/max?className=Testing",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"grade",
+						"max"
+					],
+					"query": [
+						{
+							"key": "className",
+							"value": "Testing"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Assignment",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{baseUrl}}/assignment?assignmentName=Final&className=Testing",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"assignment"
+					],
+					"query": [
+						{
+							"key": "assignmentName",
+							"value": "Final"
+						},
+						{
+							"key": "className",
+							"value": "Testing"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register New User",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"redawl\",\n    \"password\": \"passwor\",\n    \"matchingPassword\": \"passwor\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{username}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

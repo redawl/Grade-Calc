@@ -1,15 +1,18 @@
 package com.github.redawl.GradeCalc.web;
 
-import com.github.redawl.GradeCalc.Assignment.Assignment;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.redawl.GradeCalc.Assignment.AssignmentDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -18,7 +21,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class GradeControllerTests {
+public class GradeResponseControllerTests {
+
+    private final ObjectMapper objectMapper =  new ObjectMapper();
+
+    private final String testingUser;
+
     private final MockMvc mockMvc;
 
     private final String endpoint = "/api/grade";
@@ -28,16 +36,20 @@ public class GradeControllerTests {
     private final double testAssignmentWeight = 0.5;
     private final double testAssignmentScore = 50;
     @Autowired
-    public GradeControllerTests(MockMvc mockMvc) {
+    public GradeResponseControllerTests(MockMvc mockMvc, @Value("${testingUser}") String testingUser) {
         this.mockMvc = mockMvc;
+        this.testingUser = testingUser;
+
         // Add assignment to db
-        Assignment assignment = new Assignment();
-        assignment.setAssignmentName(testAssignmentName);
-        assignment.setClassName(testClassName);
-        assignment.setAssignmentWeight(testAssignmentWeight);
-        assignment.setAssignmentScore(testAssignmentScore);
+        AssignmentDto assignmentDto = new AssignmentDto();
+        assignmentDto.setAssignmentName(testAssignmentName);
+        assignmentDto.setClassName(testClassName);
+        assignmentDto.setAssignmentWeight(testAssignmentWeight);
+        assignmentDto.setAssignmentScore(testAssignmentScore);
         try {
-            mockMvc.perform(post("/api/assignment").content(assignment.toJSON())
+            mockMvc.perform(post("/api/assignment")
+                    .with(user(testingUser))
+                    .content(objectMapper.writeValueAsString(assignmentDto))
                     .contentType(MediaType.APPLICATION_JSON));
         } catch (Exception ex){
             // do nothing
@@ -47,7 +59,9 @@ public class GradeControllerTests {
     @Test
     void computeMaxGradeShouldReturnCorrectValue(){
         try{
-            mockMvc.perform(get(endpoint + "/max").queryParam("className", testClassName))
+            mockMvc.perform(get(endpoint + "/max")
+                            .with(user(testingUser))
+                            .queryParam("className", testClassName))
                     .andExpect(status().isOk()).andExpect(content().json("{ \"grade\": 75}"));
         } catch (Exception ex){
             Assertions.fail("Test should not throw exception", ex);
@@ -57,7 +71,9 @@ public class GradeControllerTests {
     @Test
     void computeCurrentGradeShouldReturnCorrectValue(){
         try {
-            mockMvc.perform(get(endpoint).queryParam("className", testClassName))
+            mockMvc.perform(get(endpoint)
+                            .with(user(testingUser))
+                            .queryParam("className", testClassName))
                     .andExpect(status().isOk())
                     .andExpect(content().json(String.format("{\"grade\":  %f}",testAssignmentScore * testAssignmentWeight)));
         } catch (Exception ex){
@@ -68,7 +84,9 @@ public class GradeControllerTests {
     @Test
     void computeRequiredGradeShouldReturnCorrectValue(){
         try {
-            mockMvc.perform(get(endpoint + "/required").queryParam("className", testClassName)
+            mockMvc.perform(get(endpoint + "/required")
+                            .with(user(testingUser))
+                            .queryParam("className", testClassName)
                             .queryParam("targetGrade", "70"))
                     .andExpect(status().isOk()).andExpect(content().json("{\"grade\": 90}"));
         } catch (Exception ex){

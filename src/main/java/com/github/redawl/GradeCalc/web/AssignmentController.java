@@ -1,6 +1,6 @@
 package com.github.redawl.GradeCalc.web;
 
-import com.github.redawl.GradeCalc.Assignment.Assignment;
+import com.github.redawl.GradeCalc.Assignment.AssignmentDto;
 import com.github.redawl.GradeCalc.Class.ClassService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,22 +21,23 @@ public class AssignmentController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void addAssignmentToClass(@RequestBody Assignment newAssignment){
-        if(newAssignment == null || !newAssignment.validateAllFieldsArePopulated()){
+    public void addAssignmentToClass(@RequestBody AssignmentDto newAssignmentDto, HttpServletRequest httpServletRequest){
+        if(newAssignmentDto == null || !newAssignmentDto.validateAllFieldsArePopulated()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "All required fields must be populated");
         }
 
         try {
-            classService.addAssignment(newAssignment);
+            classService.addAssignment(newAssignmentDto, httpServletRequest.getRemoteUser());
         } catch (IllegalArgumentException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
 
     @GetMapping
-    public Iterable<Assignment> getAssignmentsByClass(@RequestParam(value = "className") String className){
+    public Iterable<AssignmentDto> getAssignmentsByClass(@RequestParam(value = "className") String className,
+                                                         HttpServletRequest httpServletRequest){
         try {
-            return classService.getAssignmentsByClass(className);
+            return classService.getAssignmentsByClass(className, httpServletRequest.getRemoteUser());
         } catch (IllegalArgumentException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
@@ -45,10 +46,11 @@ public class AssignmentController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAssignment(@RequestParam(value = "assignmentName") String assignmentName,
-                                 @RequestParam(value = "className") String className){
+                                 @RequestParam(value = "className") String className,
+                                 HttpServletRequest httpServletRequest){
         boolean result;
         try{
-            result = classService.removeAssignment(assignmentName, className);
+            result = classService.removeAssignment(assignmentName, className, httpServletRequest.getRemoteUser());
         } catch (IllegalArgumentException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }

@@ -1,13 +1,16 @@
 package com.github.redawl.GradeCalc.Class;
 
-import com.github.redawl.GradeCalc.Assignment.Assignment;
+import com.github.redawl.GradeCalc.Assignment.AssignmentDto;
+import com.github.redawl.GradeCalc.Assignment.AssignmentFactory;
 import com.github.redawl.GradeCalc.Assignment.AssignmentRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
+@Transactional
 public class ClassService {
 
     private final AssignmentRepository assignmentRepository;
@@ -18,32 +21,33 @@ public class ClassService {
 
     /**
      * Add an assignment for a class
-     * @param assignment Assignment to add
+     * @param assignmentDto Assignment to add
      */
-    @Transactional
-    public void addAssignment(Assignment assignment){
-        if(assignment == null){
+    public void addAssignment(AssignmentDto assignmentDto, String username){
+        if(assignmentDto == null){
             throw new IllegalArgumentException("Assignment cannot be null");
         }
 
-        if(assignmentRepository.findAssignmentByAssignmentNameAndClassName(assignment.getAssignmentName(),
-                assignment.getClassName()) != null){
+        if(assignmentRepository.findAssignmentByAssignmentNameAndClassNameAndUsername(assignmentDto.getAssignmentName(),
+                assignmentDto.getClassName(), username) != null){
             throw new IllegalArgumentException("Assignment already exists");
         }
 
-        assignmentRepository.save(assignment);
+
+
+        assignmentRepository.save(AssignmentFactory.dtoToAssignment(assignmentDto, username));
     }
 
     /**
      * Remove an assignment by its name
      * @param assignmentName Name of assignment to remove
      */
-    @Transactional
-    public boolean removeAssignment(String assignmentName, String className){
+    public boolean removeAssignment(String assignmentName, String className, String username){
         assertCorrectParameter(assignmentName, "Cannot remove a null or empty assignment");
         assertCorrectParameter(className, "Cannot remove a null or empty class");
 
-        return assignmentRepository.removeAssignmentByAssignmentNameAndClassName(assignmentName, className) != 0;
+        return assignmentRepository.removeAssignmentByAssignmentNameAndClassNameAndUsername(assignmentName,
+                className, username) != 0;
     }
 
     /**
@@ -51,10 +55,14 @@ public class ClassService {
      * @param className Name of the class
      * @return List of assignments
      */
-    public Iterable<Assignment> getAssignmentsByClass(String className){
+    public Iterable<AssignmentDto> getAssignmentsByClass(String className, String username){
         assertCorrectParameter(className, "Cannot retrieve assignments for a null or empty class");
 
-        return assignmentRepository.findAssignmentsByClassName(className);
+        List<AssignmentDto> assignmentDtos = new ArrayList<>();
+        assignmentRepository.findAssignmentsByClassNameAndUsername(className, username)
+                .forEach(assignment -> assignmentDtos.add(AssignmentFactory.assignmentToDto(assignment)));
+
+        return assignmentDtos;
     }
 
     /**
@@ -62,15 +70,16 @@ public class ClassService {
      * @param className Name of class
      * @return Total grade
      */
-    public double computeGradeForClass(String className){
+    public double computeGradeForClass(String className, String username){
         assertCorrectParameter(className, "Cannot compute grade for null or empty class");
 
-        double computedGrade = 0.0;
-        for (Assignment assignment : assignmentRepository.findAssignmentsByClassName(className)) {
-            computedGrade += assignment.calculateValue();
-        }
+        AtomicReference<Double> computedGrade = new AtomicReference<>(0.0);
 
-        return computedGrade;
+        assignmentRepository.findAssignmentsByClassNameAndUsername(className, username).forEach(assignment -> {
+            computedGrade.updateAndGet(v -> (v + assignment.calculateValue()));
+        });
+
+        return computedGrade.get();
     }
 
     /**
@@ -78,17 +87,18 @@ public class ClassService {
      * @param className Name of class
      * @return Maximum possible grade
      */
-    public double computeMaxGradeForClass(String className){
+    public double computeMaxGradeForClass(String className, String username){
         assertCorrectParameter(className, "Cannot compute grade for null or empty class");
 
-        double totalGrade = 0;
-        double totalWeight = 0;
-        for(Assignment assignment : assignmentRepository.findAssignmentsByClassName(className)){
-            totalGrade += assignment.calculateValue();
-            totalWeight += assignment.getAssignmentWeight();
-        }
+        AtomicReference<Double> totalGrade = new AtomicReference<>( 0.0);
+        AtomicReference<Double> totalWeight = new AtomicReference<>(0.0);
 
-        return totalGrade + (100 * (1 - totalWeight));
+        assignmentRepository.findAssignmentsByClassNameAndUsername(className, username).forEach((assignment -> {
+            totalGrade.updateAndGet(v -> v + assignment.calculateValue());
+            totalWeight.updateAndGet(v -> v + assignment.getAssignmentWeight());
+        }));
+
+        return totalGrade.get() + 100 - (100 * totalWeight.get());
     }
 
     /**
@@ -97,23 +107,21 @@ public class ClassService {
      * @param targetGrade Target grade
      * @return Required grade for target total grade
      */
-    public double computeGradeNeededToGetGrade(String className, double targetGrade){
+    public double computeGradeNeededToGetGrade(String className, double targetGrade, String username){
         assertCorrectParameter(className, "Cannot compute needed grade for null or empty class");
         if(targetGrade < 0 || targetGrade > 100){
             throw new IllegalArgumentException(String.format("Target grade of %f is not a valid grade.", targetGrade));
         }
 
-        double totalGrade = 0;
-        double totalWeight = 0;
-        for(Assignment assignment : assignmentRepository.findAssignmentsByClassName(className)){
-            totalGrade += assignment.calculateValue();
-            totalWeight += assignment.getAssignmentWeight();
-        }
+        AtomicReference<Double> totalGrade = new AtomicReference<>(0.0);
+        AtomicReference<Double> totalWeight = new AtomicReference<>(0.0);
 
-        // targetGrade = totalGrade + (x * (1 - totalWeight))
-        // (targetGrade - totalGrade) / (1 - totalWeight)= x ;
+        assignmentRepository.findAssignmentsByClassNameAndUsername(className, username).forEach(assignment -> {
+            totalGrade.updateAndGet(v -> v + assignment.calculateValue());
+            totalWeight.updateAndGet(v -> v + assignment.getAssignmentWeight());
+        });
 
-        double requiredGrade = (targetGrade - totalGrade) / (1 - totalWeight);
+        double requiredGrade = (targetGrade - totalGrade.get()) / (1 - totalWeight.get());
 
         return requiredGrade < 0 ? 0 : requiredGrade;
     }
@@ -122,10 +130,10 @@ public class ClassService {
      * Get a list of every class
      * @return list of classes
      */
-    public List<Class> getAllClasses(){
+    public List<Class> getAllClasses(String username){
         HashMap<String, Class> classes = new HashMap<>();
 
-        assignmentRepository.findAll().forEach(assignment -> classes.putIfAbsent(assignment.getClassName(),
+        assignmentRepository.findAllByUsername(username).forEach(assignment -> classes.putIfAbsent(assignment.getClassName(),
                         new Class(assignment.getClassName())));
 
         return new ArrayList<>(classes.values());
