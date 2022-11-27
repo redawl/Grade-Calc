@@ -21,7 +21,7 @@ public class RegisterController {
     @ResponseStatus(HttpStatus.CREATED)
     public void registerUser(@RequestBody UserDto user){
         if(!userService.registerUser(user)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        };
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already taken");
+        }
     }
 }

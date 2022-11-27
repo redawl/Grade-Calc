@@ -1,7 +1,6 @@
 package com.github.redawl.GradeCalc.User;
 
 import com.sun.istack.NotNull;
-import org.springframework.security.core.GrantedAuthority;
 
 public class UserDto {
 

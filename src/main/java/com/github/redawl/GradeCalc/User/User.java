@@ -1,7 +1,5 @@
 package com.github.redawl.GradeCalc.User;
 
-import org.springframework.security.core.GrantedAuthority;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;

@@ -35,9 +35,6 @@ public class AssignmentControllerTests {
         this.testingUser = testingUser;
     }
 
-    /**
-     * Null or empty tests
-     */
     @ParameterizedTest
     @NullAndEmptySource
     void getShouldReturnBadRequestForInvalidClassNames(String className){
