@@ -2,6 +2,7 @@ package com.github.redawl.GradeCalc.web;
 
 import com.github.redawl.GradeCalc.Assignment.AssignmentDto;
 import com.github.redawl.GradeCalc.Class.ClassService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

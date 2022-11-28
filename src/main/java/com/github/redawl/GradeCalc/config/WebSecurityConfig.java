@@ -20,7 +20,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/api/register").permitAll()
+                .antMatchers("/api/register", "/swagger-ui/**", "/v3/**").permitAll()
                 .and()
                 .csrf().disable()
                 .authorizeRequests()

@@ -11,29 +11,32 @@ public class AssignmentTests {
     void calculateGradeShouldReturnCorrectValue(){
         double testAssignmentScore = 80;
         double testAssignmentWeight = .5;
-        AssignmentDto assignmentDto = new AssignmentDto();
-        assignmentDto.setAssignmentScore(testAssignmentScore);
-        assignmentDto.setAssignmentWeight(testAssignmentWeight);
+        AssignmentDto assignmentDto = AssignmentDto.builder()
+                .assignmentScore(testAssignmentScore)
+                .assignmentWeight(testAssignmentWeight)
+                        .build();
         Assertions.assertEquals(assignmentDto.calculateValue(), testAssignmentScore * testAssignmentWeight);
     }
 
     @Test
     void validateFieldsArePopulatedShouldReturnTrueWithAllFields(){
-        AssignmentDto assignmentDto = new AssignmentDto();
-        assignmentDto.setAssignmentScore(100);
-        assignmentDto.setAssignmentWeight(.5);
-        assignmentDto.setAssignmentName("Testing");
-        assignmentDto.setClassName("Testing Class");
+        AssignmentDto assignmentDto = AssignmentDto.builder()
+                .assignmentScore(100)
+                .assignmentWeight(.5)
+                .assignmentName("Testing")
+                .className("Testing Class")
+                .build();
 
         Assertions.assertTrue(assignmentDto.validateAllFieldsArePopulated());
     }
 
     @Test
     void validateFieldsArePopulatedShouldReturnFalseWithMissingFields(){
-        AssignmentDto assignmentDto = new AssignmentDto();
-        assignmentDto.setAssignmentScore(100);
-        assignmentDto.setAssignmentName("Testing");
-        assignmentDto.setClassName("Testing Class");
+        AssignmentDto assignmentDto = AssignmentDto.builder()
+                .assignmentScore(100)
+                .assignmentName("Testing")
+                .className("Testing Class")
+                .build();
 
         Assertions.assertFalse(assignmentDto.validateAllFieldsArePopulated());
     }

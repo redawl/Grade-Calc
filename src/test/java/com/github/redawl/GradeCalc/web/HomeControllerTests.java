@@ -25,7 +25,7 @@ public class HomeControllerTests {
     private final MockMvc mockMvc;
 
     @Autowired
-    public HomeControllerTests(MockMvc mockMvc, @Value("${testinguser}") String testingUser) {
+    public HomeControllerTests(MockMvc mockMvc, @Value("${testingUser}") String testingUser) {
         this.mockMvc = mockMvc;
         this.testingUser = testingUser;
     }

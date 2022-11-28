@@ -17,11 +17,12 @@ public class AssignmentFactory {
     }
 
     public static AssignmentDto assignmentToDto(Assignment assignment){
-        AssignmentDto assignmentDto = new AssignmentDto();
-        assignmentDto.setAssignmentName(assignment.getAssignmentName());
-        assignmentDto.setClassName(assignment.getClassName());
-        assignmentDto.setAssignmentWeight(assignment.getAssignmentWeight());
-        assignmentDto.setAssignmentScore(assignment.getAssignmentScore());
+        AssignmentDto assignmentDto = AssignmentDto.builder()
+                .assignmentName(assignment.getAssignmentName())
+                .className(assignment.getClassName())
+                .assignmentWeight(assignment.getAssignmentWeight())
+                .assignmentScore(assignment.getAssignmentScore())
+                .build();
 
         return assignmentDto;
     }

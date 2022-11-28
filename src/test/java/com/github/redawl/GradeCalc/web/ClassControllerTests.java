@@ -35,15 +35,16 @@ public class ClassControllerTests {
     public ClassControllerTests(MockMvc mockMvc, @Value("${testingUser}") String testingUser) {
         this.mockMvc = mockMvc;
         this.testingUser = testingUser;
-        // Add assignment
-        AssignmentDto assignmentDto = new AssignmentDto();
-        assignmentDto.setAssignmentName(testAssignmentName);
-        assignmentDto.setClassName(testClassName);
-        assignmentDto.setAssignmentWeight(.5);
-        assignmentDto.setAssignmentScore(100);
 
-        try{
-            System.out.println(testingUser);
+        // Add assignment
+        AssignmentDto assignmentDto = AssignmentDto.builder()
+                .assignmentName(testAssignmentName)
+                .className(testClassName)
+                .assignmentWeight(.5)
+                .assignmentScore(100)
+                .build();
+
+        try {
             mockMvc.perform(post("/api/assignment")
                             .with(user(testingUser))
                             .contentType(MediaType.APPLICATION_JSON)

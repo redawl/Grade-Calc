@@ -41,11 +41,12 @@ public class GradeResponseControllerTests {
         this.testingUser = testingUser;
 
         // Add assignment to db
-        AssignmentDto assignmentDto = new AssignmentDto();
-        assignmentDto.setAssignmentName(testAssignmentName);
-        assignmentDto.setClassName(testClassName);
-        assignmentDto.setAssignmentWeight(testAssignmentWeight);
-        assignmentDto.setAssignmentScore(testAssignmentScore);
+        AssignmentDto assignmentDto = AssignmentDto.builder()
+                .assignmentName(testAssignmentName)
+                .className(testClassName)
+                .assignmentWeight(testAssignmentWeight)
+                .assignmentScore(testAssignmentScore)
+                .build();
         try {
             mockMvc.perform(post("/api/assignment")
                     .with(user(testingUser))

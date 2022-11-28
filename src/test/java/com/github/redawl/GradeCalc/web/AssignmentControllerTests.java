@@ -93,11 +93,12 @@ public class AssignmentControllerTests {
     @Test
     void postShouldReturnOkOnValidClassName(){
         String className = "Test Class";
-        AssignmentDto assignmentDto = new AssignmentDto();
-        assignmentDto.setAssignmentWeight(0.4);
-        assignmentDto.setAssignmentScore(100.0);
-        assignmentDto.setClassName(className);
-        assignmentDto.setAssignmentName("Midterm");
+        AssignmentDto assignmentDto = AssignmentDto.builder()
+                .assignmentWeight(0.4)
+                .assignmentScore(100.0)
+                .className(className)
+                .assignmentName("Midterm")
+                .build();
 
         try {
             mockMvc.perform(post("/api/assignment")

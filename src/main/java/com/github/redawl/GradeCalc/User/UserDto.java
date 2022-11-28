@@ -1,13 +1,12 @@
 package com.github.redawl.GradeCalc.User;
 
-import com.sun.istack.NotNull;
+import lombok.Builder;
 
+@Builder
 public class UserDto {
 
-    @NotNull
     private String username;
 
-    @NotNull
     private String password;
     private String matchingPassword;
 

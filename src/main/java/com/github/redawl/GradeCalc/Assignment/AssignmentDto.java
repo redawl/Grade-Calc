@@ -1,6 +1,7 @@
 package com.github.redawl.GradeCalc.Assignment;
 
 import com.sun.istack.NotNull;
+import lombok.Builder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,13 +11,12 @@ import javax.persistence.Id;
 /**
  * Assignment that has been graded for a class
  */
+@Builder
 public class AssignmentDto {
     private double assignmentWeight = 0.0;
     private double assignmentScore = 0.0;
 
-    @NotNull
     private String assignmentName;
-    @NotNull
     private String className;
 
     public double getAssignmentWeight(){
