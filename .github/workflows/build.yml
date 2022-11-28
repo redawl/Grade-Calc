@@ -10,4 +10,6 @@ jobs:
     
     steps:
       - uses: actions/checkout@v3
-      - run: ./run.sh
+      - run: mvn clean package
+      - run: docker build -t gradecalc .
+      - run: docker compose up -d
