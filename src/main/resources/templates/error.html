@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Error</title>
 </head>
 <body>
-    <h1><span th:text="${path}">Bad path</span> is not a valid path</h1>
+    <h1><span th:text="${#httpServletRequest.getPathInfo()}">Bad path</span> is not a valid path</h1>
 </body>
 </html>

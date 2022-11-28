@@ -13,6 +13,7 @@ CREATE TABLE authorities
 
 CREATE UNIQUE INDEX ix_auth_username on authorities (username, authority);
 
+-- noinspection SpellCheckingInspection
 INSERT INTO users(username,password,enabled) values ('admin', '$2a$10$33prWtufCb1fjSNbyqwXU./YPYXFfxBWIMb4ER4YGDTWXIDAlCXhC', true);
 
 INSERT INTO authorities(username, authority) values ('admin', 'ROLE_ADMIN');

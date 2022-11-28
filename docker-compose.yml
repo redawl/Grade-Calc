@@ -10,4 +10,9 @@ services:
       POSTGRES_PASSWORD: "password"
     volumes:
       - ./postgres:/docker-entrypoint-initdb.d
-
+  api:
+    depends_on:
+      - postgres
+    image: gradecalc
+    ports:
+      - "8080:8080"
