@@ -3,8 +3,8 @@ package com.github.redawl.gradecalc.assignment;
 /**
  * Convert AssignmentDto to Assignment and vice versa
  */
-public class AssignmentTransformer {
-    public static Assignment DTOToAssignment(AssignmentDTO assignmentDto, String username){
+public interface AssignmentTransformer {
+    static Assignment dtoToAssignment(AssignmentDTO assignmentDto, String username){
         Assignment assignment = new Assignment();
         assignment.setUsername(username);
         assignment.setClassName(assignmentDto.getClassName());
@@ -16,7 +16,7 @@ public class AssignmentTransformer {
         return assignment;
     }
 
-    public static AssignmentDTO assignmentToDTO(Assignment assignment){
+    static AssignmentDTO assignmentToDTO(Assignment assignment){
         return AssignmentDTO.builder()
                 .assignmentName(assignment.getAssignmentName())
                 .className(assignment.getClassName())

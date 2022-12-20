@@ -3,6 +3,8 @@ package com.github.redawl.gradecalc.modelclass;
 import com.github.redawl.gradecalc.assignment.AssignmentDTO;
 import com.github.redawl.gradecalc.assignment.AssignmentTransformer;
 import com.github.redawl.gradecalc.assignment.AssignmentRepository;
+import com.github.redawl.gradecalc.exceptions.AssignmentNotFoundException;
+import com.github.redawl.gradecalc.exceptions.ClassNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,19 +37,21 @@ public class ClassService {
 
 
 
-        assignmentRepository.save(AssignmentTransformer.DTOToAssignment(assignmentDto, username));
+        assignmentRepository.save(AssignmentTransformer.dtoToAssignment(assignmentDto, username));
     }
 
     /**
      * Remove an assignment by its name
      * @param assignmentName Name of assignment to remove
      */
-    public boolean removeAssignment(String assignmentName, String className, String username){
+    public void removeAssignment(String assignmentName, String className, String username) throws AssignmentNotFoundException {
         assertCorrectParameter(assignmentName, "Cannot remove a null or empty assignment");
         assertCorrectParameter(className, "Cannot remove a null or empty class");
 
-        return assignmentRepository.removeAssignmentByAssignmentNameAndClassNameAndUsername(assignmentName,
-                className, username) != 0;
+        if(assignmentRepository.removeAssignmentByAssignmentNameAndClassNameAndUsername(assignmentName,
+                className, username) == 0){
+            throw new AssignmentNotFoundException(assignmentName, className);
+        }
     }
 
     /**
@@ -62,7 +66,7 @@ public class ClassService {
         assignmentRepository.findAssignmentsByClassNameAndUsername(className, username)
                 .forEach(assignment -> assignmentDTOS.add(AssignmentTransformer.assignmentToDTO(assignment)));
 
-        return Optional.ofNullable(assignmentDTOS.size() == 0 ? null : assignmentDTOS);
+        return Optional.ofNullable(assignmentDTOS.isEmpty() ? null : assignmentDTOS);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.github.redawl.gradecalc.web;
 
 import com.github.redawl.gradecalc.assignment.AssignmentDTO;
+import com.github.redawl.gradecalc.exceptions.AssignmentNotFoundException;
 import com.github.redawl.gradecalc.modelclass.ClassService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -88,16 +89,12 @@ public class AssignmentController {
     public void removeAssignment(@RequestParam String assignmentName,
                                  @RequestParam String className,
                                  HttpServletRequest httpServletRequest){
-        boolean result;
         try{
-            result = classService.removeAssignment(assignmentName, className, httpServletRequest.getRemoteUser());
+            classService.removeAssignment(assignmentName, className, httpServletRequest.getRemoteUser());
+        } catch (AssignmentNotFoundException ex){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
         } catch (IllegalArgumentException ex){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
-        }
-
-        // TODO: Throw an exception instead of hacky boolean return value
-        if(!result){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No assignment matching that name and class name exists.");
         }
     }
 }

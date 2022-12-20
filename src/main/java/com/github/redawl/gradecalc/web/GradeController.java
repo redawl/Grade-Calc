@@ -1,6 +1,5 @@
 package com.github.redawl.gradecalc.web;
 
-import com.github.redawl.gradecalc.modelclass.Class;
 import com.github.redawl.gradecalc.modelclass.ClassService;
 import com.github.redawl.gradecalc.grade.GradeResponse;
 import io.swagger.v3.oas.annotations.Operation;
